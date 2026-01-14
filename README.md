@@ -1,0 +1,2 @@
+# Natife-Test-Task
+SocialReader
