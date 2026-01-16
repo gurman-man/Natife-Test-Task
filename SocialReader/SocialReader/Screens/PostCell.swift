@@ -53,7 +53,10 @@ class PostCell: UICollectionViewCell {
         let button = UIButton(type: .system)
         button.setTitle("Expand", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+        button.tintColor = .systemBlue
         button.contentHorizontalAlignment = .leading
+        let config = UIImage.SymbolConfiguration(pointSize: 12, weight: .bold)
+        button.setPreferredSymbolConfiguration(config, forImageIn: .normal)
         button.addTarget(self, action: #selector(expandButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -84,9 +87,10 @@ class PostCell: UICollectionViewCell {
         contentView.addSubview(dateLabel)
         
         // UI
-        contentView.backgroundColor = .white
-        contentView.layer.cornerRadius = 8
+        contentView.backgroundColor = .secondarySystemGroupedBackground
+        contentView.layer.cornerRadius = 12
         contentView.layer.borderWidth = 1
+        contentView.clipsToBounds = true
         contentView.layer.borderColor = UIColor.systemGray5.cgColor
     }
     
@@ -136,8 +140,11 @@ class PostCell: UICollectionViewCell {
         formetter.dateStyle = .medium
         dateLabel.text = formetter.string(from: date)
         
-        let buttonTitle = post.isExpanded ? "Collapse" : "Expand"
-        expandButton.setTitle(buttonTitle, for: .normal)
+        let iconName = post.isExpanded ? "chevron.up" : "chevron.down"
+        let buttonText = post.isExpanded ? " Less" : " More"
+        
+        expandButton.setImage(UIImage(systemName: iconName), for: .normal)
+        expandButton.setTitle(buttonText, for: .normal)
         bodyLabel.numberOfLines = post.isExpanded ? 0 : 2
     }
     

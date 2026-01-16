@@ -36,6 +36,7 @@ class ViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         title = "Social Reader"
+        navigationItem.backButtonTitle = ""
         
         let layout = createLayout()
         
@@ -48,6 +49,10 @@ class ViewController: UIViewController {
         // Register cell
         collectionView.register(PostCell.self, forCellWithReuseIdentifier: PostCell.reuseId)
         view.addSubview(collectionView)
+    }
+    
+    // MARK: - Setup Navigation
+    private func setupNavigation() {
         
     }
     

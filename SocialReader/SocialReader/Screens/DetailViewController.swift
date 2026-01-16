@@ -8,7 +8,7 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-
+    
     private let postId: Int
     
     // MARK: - UI Elements
@@ -104,54 +104,54 @@ class DetailViewController: UIViewController {
         setupUI()
         loadData()
     }
-
+    
     
     // MARK: - Setup UI
     
     private func setupUI() {
-            view.backgroundColor = .systemBackground
-            title = "Post Details"
-            
-            // 1. Add ScrollView
-            view.addSubview(scrollView)
-            
-            // 2. Add StackView inside ScrollView
-            scrollView.addSubview(contentStackView)
-            
-            // 3. Add spinner
-            view.addSubview(activityIndicator)
-            
-            // 4. ScrollView Constraints
-            NSLayoutConstraint.activate([
-                scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                
-                activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            ])
-            
-            // 5. StackView Constraints
-            NSLayoutConstraint.activate([
-                contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-                contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
-                contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
-                contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-                
-                contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32)
-            ])
-            
-            // 6. Fill the Vertically stack
-            contentStackView.addArrangedSubview(postImageView)
-            contentStackView.addArrangedSubview(titleLabel)
-            contentStackView.addArrangedSubview(descriptionLabel)
+        view.backgroundColor = .systemBackground
+        title = "Reading 📖"
         
-            // 7. Fill the Horizontally stack
-            footerStack.addArrangedSubview(likesLabel)
-            footerStack.addArrangedSubview(dateLabel)
-            contentStackView.addArrangedSubview(footerStack)
-        }
+        // 1. Add ScrollView
+        view.addSubview(scrollView)
+        
+        // 2. Add StackView inside ScrollView
+        scrollView.addSubview(contentStackView)
+        
+        // 3. Add spinner
+        view.addSubview(activityIndicator)
+        
+        // 4. ScrollView Constraints
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        
+        // 5. StackView Constraints
+        NSLayoutConstraint.activate([
+            contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
+            contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
+            contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32)
+        ])
+        
+        // 6. Fill the Vertically stack
+        contentStackView.addArrangedSubview(postImageView)
+        contentStackView.addArrangedSubview(titleLabel)
+        contentStackView.addArrangedSubview(descriptionLabel)
+        
+        // 7. Fill the Horizontally stack
+        footerStack.addArrangedSubview(likesLabel)
+        footerStack.addArrangedSubview(dateLabel)
+        contentStackView.addArrangedSubview(footerStack)
+    }
     
     // MARK: - Data Loading
     
