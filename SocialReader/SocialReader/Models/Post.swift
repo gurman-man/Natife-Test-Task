@@ -8,7 +8,7 @@
 import Foundation
 
 struct Post: Codable, Hashable {
-    // MARK: - API Data
+    // MARK: - API Properties
     
     let postId: Int
     let timeshamp: TimeInterval
