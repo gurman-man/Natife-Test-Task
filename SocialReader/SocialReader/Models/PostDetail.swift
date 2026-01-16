@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: - API Properties
 struct PostDetail: Codable {
     let postId: Int
     let timeshamp: TimeInterval
@@ -16,7 +15,6 @@ struct PostDetail: Codable {
     let postImage: String
     let likesCount: Int
     
-    // MARK: - CodingKeys
     enum CodingKeys: String, CodingKey {
         case postId
         case timeshamp

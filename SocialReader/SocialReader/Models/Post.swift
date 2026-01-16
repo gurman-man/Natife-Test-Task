@@ -22,7 +22,7 @@ struct Post: Codable, Hashable {
     
     // MARK: - CodingKeys
     enum CodingKeys: String, CodingKey {
-        case postId = "postId"
+        case postId
         case timeshamp
         case title
         case previewText = "preview_text"

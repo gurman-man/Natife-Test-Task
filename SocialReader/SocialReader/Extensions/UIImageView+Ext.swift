@@ -6,16 +6,23 @@
 //
 
 import UIKit
+fileprivate let imageCache = NSCache<NSString, UIImage>()
 
 extension UIImageView {
     
     func loadImage(from urlString: String) {
+        // Reset previous image to avoid flickering
         self.image = nil
         
-        // Validate the URL string
         guard let url = URL(string: urlString) else { return }
         
-        // Start an asynchronous task to dowload image
+        // 1. Check for cached image
+        if let cachedImage = imageCache.object(forKey: urlString as NSString) {
+            self.image = cachedImage
+            return
+        }
+        
+        // 2. Download asynchronously
         Task {
             do {
                 // Fetch image data from the network
@@ -23,6 +30,10 @@ extension UIImageView {
                 
                 // Try to create a UIImage and update the UI on the Main Thread
                 if let newImage = UIImage(data: data) {
+                    
+                    // Save to cache
+                    imageCache.setObject(newImage, forKey: urlString as NSString)
+                    
                     await MainActor.run() {
                         self.image = newImage
                     }

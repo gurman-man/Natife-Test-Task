@@ -158,19 +158,21 @@ class DetailViewController: UIViewController {
     private func loadData() {
         activityIndicator.startAnimating()
         
-        Task {
+        Task { [weak self] in
+            guard let self = self else { return }
+            
             do {
                 // Fetch post details from the network
-                let detail = try await NetworkService.shared.fetchPostDetails(id: postId)
+                let detail = try await NetworkService.shared.fetchPostDetails(id: self.postId)
                 
                 await MainActor.run {
-                    updateUI(with: detail)
-                    activityIndicator.stopAnimating()
+                    self.updateUI(with: detail)
+                    self.activityIndicator.stopAnimating()
                 }
             } catch {
                 await MainActor.run {
-                    activityIndicator.stopAnimating()
-                    showError(error.localizedDescription)
+                    self.activityIndicator.stopAnimating()
+                    self.showError(error.localizedDescription)
                 }
             }
         }

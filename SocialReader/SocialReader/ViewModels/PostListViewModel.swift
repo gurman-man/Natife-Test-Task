@@ -10,24 +10,26 @@ import Foundation
 final class PostListViewModel {
     // MARK: - Variables
     
-    // Масив для збережння постів, отриманих з мережі
     private(set) var posts: [Post] = []
     
-    var onStateChanged: (() -> Void)?   // спрацює коли дані оновляться
+    // Closures for bindings
+    var onStateChanged: (() -> Void)?
     var onError: ((String) -> Void)?
     
     // MARK: - Methods
     
     func loadData() {
-        Task {
+        Task { [weak self] in
+            guard let self = self else { return }
+            
             do {
-                // Receive posts
+                // Fetching on background thread
                 let fetchedPosts = try await NetworkService.shared.fetchPosts()
                 
-                // Saved posts
+                // Save & sort posts
                 self.posts = fetchedPosts.sorted { $0.timeshamp > $1.timeshamp }
                 
-                // Return to the Main Thread to update the UI
+                // Updating State on Main Thread
                 await MainActor.run {
                     self.onStateChanged?()
                 }
@@ -41,7 +43,7 @@ final class PostListViewModel {
         }
     }
     
-    func tooglePostStage(postId: Int) {
+    func togglePostState(postId: Int) {
         // Find the post index
         guard let index = posts.firstIndex(where: { $0.postId == postId }) else { return }
         

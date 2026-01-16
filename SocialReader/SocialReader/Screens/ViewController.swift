@@ -38,22 +38,17 @@ class ViewController: UIViewController {
         title = "Social Reader"
         navigationItem.backButtonTitle = ""
         
+        // Layout Config
         let layout = createLayout()
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight] // stretching to full size
         collectionView.backgroundColor = .systemGroupedBackground
-        
         collectionView.delegate = self
         
         // Register cell
         collectionView.register(PostCell.self, forCellWithReuseIdentifier: PostCell.reuseId)
         view.addSubview(collectionView)
-    }
-    
-    // MARK: - Setup Navigation
-    private func setupNavigation() {
-        
     }
     
     // MARK: - Composition Layout
@@ -90,12 +85,11 @@ class ViewController: UIViewController {
                 return UICollectionViewCell()
             }
             
-            // Configure Cell
             cell.configure(with: post)
             
-            // Handling button "Expand"
+            // Handling "Expand" logic
             cell.onExpandTap = {
-                self?.viewModel.tooglePostStage(postId: post.postId)
+                self?.viewModel.togglePostState(postId: post.postId)
             }
             
             return cell

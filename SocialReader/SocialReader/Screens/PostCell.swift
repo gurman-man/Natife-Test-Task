@@ -16,6 +16,13 @@ class PostCell: UICollectionViewCell {
     // Closure for handling button
     var onExpandTap: (() -> Void)?
     
+    // Date formatter
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter
+    }()
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 18, weight: .bold)
