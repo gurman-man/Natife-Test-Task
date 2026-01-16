@@ -8,28 +8,110 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    // MARK: - Enums
+    // Section for DiffableDataSource
+    enum Section {
+        case main
+    }
+    
+    // MARK: - Properties
+    private let viewModel = PostListViewModel()
+    private var collectionView: UICollectionView!
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Post>!
+    
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
+        configureDataSource()
+        bindViewModel()
         
-        Task {
-            do {
-                print("Downloading...")
-                let posts = try await NetworkService.shared.fetchPosts()
-                
-                print("Success - total post: \(posts.count)")
-                
-                // Друкуємо перший пост для перевірки
-                if let firstPost = posts.first {
-                    print("First post: \(firstPost.title)")
-                    print("Likes: \(firstPost.likesCount)")
-                }
-                
-            } catch {
-                print("Failure: \(error)")
+        // start dowloading
+        viewModel.loadData()
+    }
+    
+    // MARK: - Setup UI
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
+        title = "Social Reader"
+        
+        let layout = createLayout()
+        
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight] // stretching to full size
+        collectionView.backgroundColor = .systemGroupedBackground
+        
+        // Register cell
+        collectionView.register(PostCell.self, forCellWithReuseIdentifier: PostCell.reuseId)
+        view.addSubview(collectionView)
+        
+    }
+    
+    // MARK: - Composition Layout
+    private func createLayout() -> UICollectionViewLayout {
+        
+        // 1. Item (one cell)
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(200)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        // 2. Group (cell's group, vertically)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(200)
+        )
+        let group =  NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        // 3. Section
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 10 // paddind between posts
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+        
+        return UICollectionViewCompositionalLayout(section: section)
+    }
+    
+    // MARK: - Data Source (Diffable)
+    private func configureDataSource() {
+        dataSource = UICollectionViewDiffableDataSource<Section, Post>(collectionView: collectionView) { (collectionView, indexPath, post) -> UICollectionViewCell? in
+            
+            // Verify Cell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCell.reuseId, for: indexPath) as? PostCell else {
+                return UICollectionViewCell()
             }
+            
+            // Configure Cell
+            cell.configure(with: post)
+            
+            return cell
         }
     }
-
+    
+    // MARK: - ViewModel Binding
+    
+    private func bindViewModel() {
+        // Notify the view to update when data changes
+        viewModel.onStateChanged = { [weak self] in
+            self?.updateSnapshot()
+        }
+        
+        viewModel.onError = { [weak self] errorMessage in
+            let alert = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self?.present(alert, animated: true)
+        }
+    }
+    
+    // Updates the collection view content by applying a new data snapshot
+    private func updateSnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(viewModel.posts)
+        
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
 }
 

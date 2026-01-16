@@ -64,6 +64,8 @@ class PostCell: UICollectionViewCell {
     // Standard initializer for code-based UI
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupViews()
+        setupConstraints()
     }
     
     // Required initializer for Storyboard support (not used here)
