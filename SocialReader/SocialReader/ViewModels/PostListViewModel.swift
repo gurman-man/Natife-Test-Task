@@ -17,6 +17,7 @@ final class PostListViewModel {
     var onError: ((String) -> Void)?
     
     // MARK: - Methods
+    
     func loadData() {
         Task {
             do {
@@ -38,5 +39,16 @@ final class PostListViewModel {
                 }
             }
         }
+    }
+    
+    func tooglePostStage(postId: Int) {
+        // Find the post index
+        guard let index = posts.firstIndex(where: { $0.postId == postId }) else { return }
+        
+        // Toggle the expansion flag
+        posts[index].isExpanded.toggle()
+        
+        // Notify View that data changed and refresh the UI
+        onStateChanged?()
     }
 }

@@ -76,7 +76,7 @@ class ViewController: UIViewController {
     
     // MARK: - Data Source (Diffable)
     private func configureDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, Post>(collectionView: collectionView) { (collectionView, indexPath, post) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<Section, Post>(collectionView: collectionView) { [weak self] (collectionView, indexPath, post) -> UICollectionViewCell? in
             
             // Verify Cell
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PostCell.reuseId, for: indexPath) as? PostCell else {
@@ -85,6 +85,11 @@ class ViewController: UIViewController {
             
             // Configure Cell
             cell.configure(with: post)
+            
+            // Handling button "Expand"
+            cell.onExpandTap = {
+                self?.viewModel.tooglePostStage(postId: post.postId)
+            }
             
             return cell
         }
