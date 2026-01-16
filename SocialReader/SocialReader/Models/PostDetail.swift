@@ -15,14 +15,14 @@ struct PostDetail: Codable {
     let text: String
     let postImage: String
     let likesCount: Int
-}
-
-// MARK: - CodingKeys
-enum CodingKeys: String, CodingKey {
-    case postId
-    case timeshamp
-    case title
-    case text
-    case postImage = "postImage"
-    case likesCount = "likes_count"
+    
+    // MARK: - CodingKeys
+    enum CodingKeys: String, CodingKey {
+        case postId
+        case timeshamp
+        case title
+        case text
+        case postImage
+        case likesCount = "likes_count"
+    }
 }

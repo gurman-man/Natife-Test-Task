@@ -63,8 +63,8 @@ final class NetworkService {
         let (data, _) = try await URLSession.shared.data(from: url)
         
         do {
-            let detail = try JSONDecoder().decode(PostDetail.self, from: data)
-            return detail
+            let decodedResponseDetail = try JSONDecoder().decode(PostDetailResponse.self, from: data)
+            return decodedResponseDetail.post
         } catch {
             throw PostError.decodingError(error.localizedDescription)
         }

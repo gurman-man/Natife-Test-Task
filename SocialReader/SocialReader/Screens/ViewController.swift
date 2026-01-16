@@ -43,6 +43,8 @@ class ViewController: UIViewController {
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight] // stretching to full size
         collectionView.backgroundColor = .systemGroupedBackground
         
+        collectionView.delegate = self
+        
         // Register cell
         collectionView.register(PostCell.self, forCellWithReuseIdentifier: PostCell.reuseId)
         view.addSubview(collectionView)
@@ -117,6 +119,18 @@ class ViewController: UIViewController {
         snapshot.appendItems(viewModel.posts)
         
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension ViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let post = dataSource.itemIdentifier(for: indexPath) else { return }
+        let detailVC = DetailViewController(postId: post.postId)
+        navigationController?.pushViewController(detailVC, animated: true)
+        collectionView.deselectItem(at: indexPath, animated: true)
     }
 }
 

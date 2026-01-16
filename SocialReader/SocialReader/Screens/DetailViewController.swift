@@ -28,11 +28,21 @@ class DetailViewController: UIViewController {
         return scroll
     }()
     
-    // Vertically stack (image, header, text)
+    // Vertically stack for: image, header, text
     private let contentStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = 16
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    // Horizontally stack for: date & likes
+    private let footerStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.distribution = .equalSpacing
+        stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -55,6 +65,13 @@ class DetailViewController: UIViewController {
         return label
     }()
     
+    private let descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.numberOfLines = 0
+        return label
+    }()
+    
     private let likesLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .medium)
@@ -62,10 +79,10 @@ class DetailViewController: UIViewController {
         return label
     }()
     
-    private let descriptionLabel: UILabel = {
+    private let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.numberOfLines = 0 // Текст може бути безкінечним
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.textColor = .secondaryLabel
         return label
     }()
     
@@ -125,11 +142,15 @@ class DetailViewController: UIViewController {
                 contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32)
             ])
             
-            // 6. Fill the stack
+            // 6. Fill the Vertically stack
             contentStackView.addArrangedSubview(postImageView)
             contentStackView.addArrangedSubview(titleLabel)
-            contentStackView.addArrangedSubview(likesLabel)
             contentStackView.addArrangedSubview(descriptionLabel)
+        
+            // 7. Fill the Horizontally stack
+            footerStack.addArrangedSubview(likesLabel)
+            footerStack.addArrangedSubview(dateLabel)
+            contentStackView.addArrangedSubview(footerStack)
         }
     
     // MARK: - Data Loading
@@ -159,6 +180,11 @@ class DetailViewController: UIViewController {
         titleLabel.text = detail.title
         descriptionLabel.text = detail.text
         likesLabel.text = "♥️ \(detail.likesCount)"
+        
+        let date = Date(timeIntervalSince1970: detail.timeshamp)
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        dateLabel.text = formatter.string(from: date)
         
         // Start asynchronous image loading from ext
         postImageView.loadImage(from: detail.postImage)
