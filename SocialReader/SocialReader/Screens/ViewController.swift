@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     private let viewModel = PostListViewModel()
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, Post>!
+    private var isSortedByLikes = false
     
     // MARK: - Lifecycle
     
@@ -49,7 +50,35 @@ class ViewController: UIViewController {
         // Register cell
         collectionView.register(PostCell.self, forCellWithReuseIdentifier: PostCell.reuseId)
         view.addSubview(collectionView)
+        
+        
+        let button = UIButton()
+        button.addTarget(self, action: #selector(sortTapped), for: .touchUpInside)
+        button.setImage(UIImage(systemName: "arrow.up.arrow.down"), for: .normal)
+        
+        navigationItem.rightBarButtonItem = .init(customView: button)
+        
     }
+    
+    @objc func sortTapped() {
+        isSortedByLikes.toggle()
+        applyCurrentSnapshot()
+    }
+    
+    private func applyCurrentSnapshot() {
+        var postsToShow = viewModel.posts
+
+        if isSortedByLikes {
+            postsToShow = postsToShow.sorted { $0.likesCount > $1.likesCount }
+        }
+
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(postsToShow)
+
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+
     
     // MARK: - Composition Layout
     private func createLayout() -> UICollectionViewLayout {
@@ -101,7 +130,7 @@ class ViewController: UIViewController {
     private func bindViewModel() {
         // Notify the view to update when data changes
         viewModel.onStateChanged = { [weak self] in
-            self?.updateSnapshot()
+            self?.applyCurrentSnapshot()
         }
         
         viewModel.onError = { [weak self] errorMessage in
@@ -109,15 +138,6 @@ class ViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             self?.present(alert, animated: true)
         }
-    }
-    
-    // Updates the collection view content by applying a new data snapshot
-    private func updateSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Post>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(viewModel.posts)
-        
-        dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 

@@ -86,6 +86,7 @@ class DetailViewController: UIViewController {
         return label
     }()
     
+    
     // MARK: - Init
     
     init(postId: Int) {
